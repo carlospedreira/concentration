@@ -13,13 +13,13 @@ export const initialState: GameState = {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "START_GAME": {
-      const { config } = action.payload;
+      const { config, imageUrls } = action.payload;
       const result = validateBoardConfig(config);
       if (!result.valid) return state;
       return {
         phase: "playing",
         config,
-        cards: generateBoard(config),
+        cards: generateBoard(config, imageUrls),
         selectedIndices: [],
         moveCount: 0,
       };

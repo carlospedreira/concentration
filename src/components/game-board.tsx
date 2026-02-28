@@ -21,6 +21,7 @@ export function GameBoard({ cards, cols, onSelectCard, onReset }: GameBoardProps
             id={card.id}
             symbol={card.symbol}
             state={card.state}
+            imageUrl={card.imageUrl}
             onSelect={onSelectCard}
           />
         ))}

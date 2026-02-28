@@ -20,8 +20,8 @@ export function useGameState() {
     }
   }, [state.phase]);
 
-  const startGame = (config: BoardConfig) => {
-    dispatch({ type: "START_GAME", payload: { config } });
+  const startGame = (config: BoardConfig, imageUrls?: readonly string[]) => {
+    dispatch({ type: "START_GAME", payload: { config, imageUrls } });
   };
 
   const selectCard = (index: number) => {

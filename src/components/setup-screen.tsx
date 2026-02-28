@@ -1,15 +1,28 @@
 import { useState } from "react";
-import type { BoardConfig } from "../types/game";
+import type { BoardConfig, UploadedImage } from "../types/game";
 import { validateBoardConfig } from "../utils/validation";
+import { ImageUploadPanel } from "./image-upload-panel";
 
 interface SetupScreenProps {
-  onStart: (config: BoardConfig) => void;
+  images: readonly UploadedImage[];
+  onAddImages: (files: File[]) => void;
+  onRemoveImage: (id: string) => void;
+  onReorderImage: (id: string, direction: "up" | "down") => void;
+  onStart: (config: BoardConfig, imageUrls: readonly string[]) => void;
 }
 
-export function SetupScreen({ onStart }: SetupScreenProps) {
+export function SetupScreen({
+  images,
+  onAddImages,
+  onRemoveImage,
+  onReorderImage,
+  onStart,
+}: SetupScreenProps) {
   const [rows, setRows] = useState(4);
   const [cols, setCols] = useState(4);
   const [error, setError] = useState<string | null>(null);
+
+  const pairCount = (rows * cols) / 2;
 
   const handleStart = () => {
     const config = { rows, cols };
@@ -19,7 +32,8 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
       return;
     }
     setError(null);
-    onStart(config);
+    const imageUrls = images.map((img) => img.url);
+    onStart(config, imageUrls);
   };
 
   return (
@@ -54,6 +68,32 @@ export function SetupScreen({ onStart }: SetupScreenProps) {
             className="border rounded-lg px-3 py-2 text-center text-lg"
           />
         </div>
+
+        <ImageUploadPanel
+          images={images}
+          onAdd={onAddImages}
+          onRemove={onRemoveImage}
+          onReorder={onReorderImage}
+        />
+
+        {images.length > 0 && images.length < pairCount && (
+          <p className="text-sm text-gray-600 text-center">
+            {images.length} of {pairCount} pairs will use your images; {pairCount - images.length} will use default symbols.
+          </p>
+        )}
+
+        {images.length > 0 && images.length === pairCount && (
+          <p className="text-sm text-gray-600 text-center">
+            All {pairCount} pairs will use your images.
+          </p>
+        )}
+
+        {images.length > pairCount && (
+          <p className="text-sm text-amber-600 text-center">
+            Only {pairCount} of {images.length} images will be used.
+          </p>
+        )}
+
         {error && (
           <p role="alert" className="text-red-600 text-sm text-center">
             {error}

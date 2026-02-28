@@ -4,10 +4,11 @@ interface CardComponentProps {
   id: number;
   symbol: string;
   state: CardState;
+  imageUrl?: string;
   onSelect: (id: number) => void;
 }
 
-export function CardComponent({ id, symbol, state, onSelect }: CardComponentProps) {
+export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardComponentProps) {
   const isRevealed = state === "faceUp" || state === "matched";
 
   const handleClick = () => {
@@ -37,7 +38,15 @@ export function CardComponent({ id, symbol, state, onSelect }: CardComponentProp
         `}
       >
         {isRevealed ? (
-          <span className="text-2xl sm:text-3xl md:text-4xl select-none">{symbol}</span>
+          imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="Card image"
+              className="w-full h-full object-cover rounded-lg"
+            />
+          ) : (
+            <span className="text-2xl sm:text-3xl md:text-4xl select-none">{symbol}</span>
+          )
         ) : (
           <span className="text-2xl text-indigo-300">?</span>
         )}

@@ -12,10 +12,18 @@ export interface BoardConfig {
   readonly cols: number;
 }
 
+export interface UploadedImage {
+  readonly id: string;
+  readonly file: File;
+  readonly url: string;
+  readonly name: string;
+}
+
 export interface Card {
   readonly id: number;
   readonly symbol: string;
   readonly state: CardState;
+  readonly imageUrl?: string;
 }
 
 export interface GameState {
@@ -27,7 +35,7 @@ export interface GameState {
 }
 
 export type GameAction =
-  | { readonly type: "START_GAME"; readonly payload: { config: BoardConfig } }
+  | { readonly type: "START_GAME"; readonly payload: { config: BoardConfig; imageUrls?: readonly string[] } }
   | { readonly type: "SELECT_CARD"; readonly payload: { index: number } }
   | { readonly type: "CHECK_MATCH" }
   | { readonly type: "FLIP_BACK" }
@@ -40,4 +48,4 @@ export interface ValidationResult {
 
 export type ValidateBoardConfig = (config: BoardConfig) => ValidationResult;
 
-export type GenerateBoard = (config: BoardConfig) => readonly Card[];
+export type GenerateBoard = (config: BoardConfig, imageUrls?: readonly string[]) => readonly Card[];

@@ -88,4 +88,60 @@ describe("CardComponent", () => {
     await user.click(screen.getByTestId("card-5"));
     expect(onSelect).not.toHaveBeenCalled();
   });
+
+  describe("image rendering", () => {
+    it("renders img with object-fit cover when imageUrl is present and faceUp", () => {
+      render(
+        <CardComponent
+          id={10}
+          symbol="★"
+          state="faceUp"
+          imageUrl="blob:http://localhost/abc"
+          onSelect={vi.fn()}
+        />,
+      );
+      const img = screen.getByRole("img");
+      expect(img).toHaveAttribute("src", "blob:http://localhost/abc");
+      expect(img.className).toContain("object-cover");
+    });
+
+    it("renders symbol span when imageUrl is absent and faceUp", () => {
+      render(
+        <CardComponent
+          id={11}
+          symbol="★"
+          state="faceUp"
+          onSelect={vi.fn()}
+        />,
+      );
+      expect(screen.getByText("★")).toBeVisible();
+      expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    });
+
+    it("does not show image when card is faceDown", () => {
+      render(
+        <CardComponent
+          id={12}
+          symbol="★"
+          state="faceDown"
+          imageUrl="blob:http://localhost/abc"
+          onSelect={vi.fn()}
+        />,
+      );
+      expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    });
+
+    it("renders img when matched with imageUrl", () => {
+      render(
+        <CardComponent
+          id={13}
+          symbol="★"
+          state="matched"
+          imageUrl="blob:http://localhost/abc"
+          onSelect={vi.fn()}
+        />,
+      );
+      expect(screen.getByRole("img")).toHaveAttribute("src", "blob:http://localhost/abc");
+    });
+  });
 });
