@@ -10,9 +10,11 @@ interface CardComponentProps {
 
 export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardComponentProps) {
   const isRevealed = state === "faceUp" || state === "matched";
+  const isClickable = state === "faceDown";
+  const isMatched = state === "matched";
 
   const handleClick = () => {
-    if (state === "faceDown") {
+    if (isClickable) {
       onSelect(id);
     }
   };
@@ -22,34 +24,54 @@ export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardCom
       data-testid={`card-${id}`}
       data-state={state}
       onClick={handleClick}
-      className={`
-        relative w-full aspect-square cursor-pointer
-        ${state === "matched" ? "opacity-70" : ""}
-      `}
+      className={`perspective-800 w-full aspect-square ${isClickable ? "group cursor-pointer" : ""}`}
     >
       <div
         className={`
-          w-full h-full rounded-lg border-2 flex items-center justify-center
-          transition-transform duration-500
-          ${isRevealed
-            ? "bg-white border-indigo-200"
-            : "bg-indigo-600 border-indigo-400"
-          }
+          card-inner preserve-3d relative w-full h-full
+          ${isRevealed ? "rotate-y-180" : ""}
+          ${isMatched ? "animate-match-pop" : ""}
+          group-hover:-translate-y-0.5 group-hover:scale-[1.02]
+          group-active:scale-[0.98]
         `}
       >
-        {isRevealed ? (
-          imageUrl ? (
-            <img
-              src={imageUrl}
-              alt="Card image"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          ) : (
-            <span className="text-2xl sm:text-3xl md:text-4xl select-none">{symbol}</span>
-          )
-        ) : (
-          <span className="text-2xl text-indigo-300">?</span>
-        )}
+        {/* Card Back (face-down) */}
+        <div
+          className="
+            backface-hidden absolute inset-0 rounded-card
+            bg-card-back border-2 border-card-border shadow-card
+            flex items-center justify-center
+            group-hover:shadow-card-hover transition-shadow duration-150
+          "
+        >
+          <span className="text-2xl sm:text-3xl font-display font-semibold text-card-accent select-none">
+            ?
+          </span>
+        </div>
+
+        {/* Card Front (face-up / matched) */}
+        <div
+          className={`
+            backface-hidden rotate-y-180 absolute inset-0 rounded-card
+            flex items-center justify-center overflow-hidden
+            ${isMatched
+              ? "bg-matched border-2 border-matched-border shadow-card-matched card-shimmer"
+              : "bg-surface-warm border border-brand-100 shadow-card"
+            }
+          `}
+        >
+          {isRevealed && (
+            imageUrl ? (
+              <img
+                src={imageUrl}
+                alt="Card image"
+                className="w-full h-full object-cover rounded-card"
+              />
+            ) : (
+              <span className="text-2xl sm:text-3xl md:text-4xl select-none">{symbol}</span>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

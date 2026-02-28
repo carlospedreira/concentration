@@ -10,9 +10,9 @@ interface GameBoardProps {
 
 export function GameBoard({ cards, cols, onSelectCard, onReset }: GameBoardProps) {
   return (
-    <div className="flex flex-col items-center gap-4 w-full">
+    <div className="flex flex-col items-center gap-4 sm:gap-6 w-full animate-screen-enter">
       <div
-        className="grid gap-1 sm:gap-2 p-2 sm:p-4 w-full max-w-2xl mx-auto"
+        className="grid gap-1.5 sm:gap-2.5 md:gap-3 p-3 sm:p-5 w-full max-w-2xl mx-auto"
         style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
       >
         {cards.map((card) => (
@@ -28,7 +28,7 @@ export function GameBoard({ cards, cols, onSelectCard, onReset }: GameBoardProps
       </div>
       <button
         onClick={onReset}
-        className="text-sm text-gray-500 hover:text-gray-700 underline transition-colors"
+        className="text-sm font-semibold text-text-secondary hover:text-brand-600 transition-colors"
       >
         New Game
       </button>

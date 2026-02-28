@@ -54,7 +54,7 @@ export function ImageUploadPanel({
     <div className="flex flex-col gap-3 w-full">
       <label
         htmlFor="image-upload"
-        className="text-sm font-medium text-gray-700"
+        className="text-sm font-semibold text-text-secondary"
       >
         Upload Images
       </label>
@@ -65,7 +65,13 @@ export function ImageUploadPanel({
         accept="image/*"
         multiple
         onChange={handleChange}
-        className="text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:text-indigo-700 file:font-medium file:cursor-pointer hover:file:bg-indigo-100"
+        className="
+          text-sm text-text-secondary
+          file:mr-3 file:py-2 file:px-4 file:rounded-button file:border-0
+          file:bg-brand-100 file:text-brand-700 file:font-semibold file:cursor-pointer
+          file:transition-all file:duration-150
+          hover:file:bg-brand-200
+        "
       />
 
       {error && (
@@ -79,21 +85,25 @@ export function ImageUploadPanel({
           {images.map((image, index) => (
             <li
               key={image.id}
-              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
+              className="flex items-center gap-3 p-2 bg-surface rounded-card border border-brand-50"
             >
               <img
                 src={image.url}
                 alt={image.name}
-                className="w-10 h-10 object-cover rounded"
+                className="w-10 h-10 object-cover rounded-button shrink-0"
               />
-              <span className="text-sm text-gray-700 truncate flex-1">
+              <span className="text-sm text-text-secondary truncate flex-1">
                 {image.name}
               </span>
-              <div className="flex gap-1">
+              <div className="flex gap-0.5 shrink-0">
                 {index > 0 && (
                   <button
                     onClick={() => onReorder(image.id, "up")}
-                    className="p-1 text-gray-500 hover:text-gray-700"
+                    className="
+                      p-1.5 rounded text-text-muted transition-colors duration-150
+                      hover:text-brand-600 hover:bg-brand-50
+                      focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-500
+                    "
                     aria-label={`Move ${image.name} up`}
                   >
                     ↑
@@ -102,7 +112,11 @@ export function ImageUploadPanel({
                 {index < images.length - 1 && (
                   <button
                     onClick={() => onReorder(image.id, "down")}
-                    className="p-1 text-gray-500 hover:text-gray-700"
+                    className="
+                      p-1.5 rounded text-text-muted transition-colors duration-150
+                      hover:text-brand-600 hover:bg-brand-50
+                      focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-500
+                    "
                     aria-label={`Move ${image.name} down`}
                   >
                     ↓
@@ -110,7 +124,11 @@ export function ImageUploadPanel({
                 )}
                 <button
                   onClick={() => onRemove(image.id)}
-                  className="p-1 text-red-500 hover:text-red-700"
+                  className="
+                    p-1.5 rounded text-text-muted transition-colors duration-150
+                    hover:text-red-500 hover:bg-red-50
+                    focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-red-500
+                  "
                   aria-label={`Remove ${image.name}`}
                 >
                   ✕
