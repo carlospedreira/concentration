@@ -5,6 +5,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-28
 ## Active Technologies
 - TypeScript (strict mode, ES2022 target) + React 18, Tailwind CSS v4, vite-plugin-pwa, Vitest + React Testing Library (002-custom-image-upload)
 - In-memory React state (lifted above game cycle); `URL.createObjectURL` for image display URLs (002-custom-image-upload)
+- TypeScript (strict mode, ES2022 target) + React 19, Tailwind CSS v4 (`@tailwindcss/vite`), `@fontsource-variable/fredoka` (NEW), `@fontsource-variable/nunito` (NEW) (003-ui-visual-redesign)
+- N/A (no storage changes) (003-ui-visual-redesign)
 
 - TypeScript (strict mode, ES2022 target) + React 18, Tailwind CSS v4, vite-plugin-pwa (001-core-game-logic)
 
@@ -24,6 +26,7 @@ npm test && npm run lint
 TypeScript (strict mode, ES2022 target): Follow standard conventions
 
 ## Recent Changes
+- 003-ui-visual-redesign: Added TypeScript (strict mode, ES2022 target) + React 19, Tailwind CSS v4 (`@tailwindcss/vite`), `@fontsource-variable/fredoka` (NEW), `@fontsource-variable/nunito` (NEW)
 - 002-custom-image-upload: Added TypeScript (strict mode, ES2022 target) + React 18, Tailwind CSS v4, vite-plugin-pwa, Vitest + React Testing Library
 
 - 001-core-game-logic: Added TypeScript (strict mode, ES2022 target) + React 18, Tailwind CSS v4, vite-plugin-pwa

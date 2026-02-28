@@ -4,7 +4,7 @@ interface MoveCounterProps {
 
 export function MoveCounter({ moveCount }: MoveCounterProps) {
   return (
-    <div className="text-lg font-semibold text-gray-700">
+    <div className="text-xl font-display font-semibold text-brand-800">
       Moves: {moveCount}
     </div>
   );
