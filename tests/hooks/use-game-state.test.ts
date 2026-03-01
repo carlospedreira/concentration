@@ -29,12 +29,13 @@ describe("useGameState", () => {
     expect(imageCards).toHaveLength(4);
   });
 
-  it("startGame without imageUrls creates symbol-only board", () => {
+  it("startGame without imageUrls uses emoji defaults", () => {
     const { result } = renderHook(() => useGameState());
     act(() => {
       result.current.startGame({ rows: 2, cols: 2 });
     });
+    // Emoji images fill all pairs when no custom images provided
     const imageCards = result.current.state.cards.filter((c) => c.imageUrl);
-    expect(imageCards).toHaveLength(0);
+    expect(imageCards).toHaveLength(4);
   });
 });

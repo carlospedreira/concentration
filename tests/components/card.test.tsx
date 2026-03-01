@@ -143,5 +143,25 @@ describe("CardComponent", () => {
       );
       expect(screen.getByRole("img")).toHaveAttribute("src", "blob:http://localhost/abc");
     });
+
+    it("shows symbol text when image fires error event", async () => {
+      const { container } = render(
+        <CardComponent
+          id={14}
+          symbol="Mickey"
+          state="faceUp"
+          imageUrl="bad-url.webp"
+          onSelect={vi.fn()}
+        />,
+      );
+      const img = screen.getByRole("img");
+      // Simulate image load error
+      await import("@testing-library/react").then(({ fireEvent }) => {
+        fireEvent.error(img);
+      });
+      // After error, image should be hidden and symbol should be visible
+      expect(screen.queryByRole("img")).not.toBeInTheDocument();
+      expect(screen.getByText("Mickey")).toBeVisible();
+    });
   });
 });

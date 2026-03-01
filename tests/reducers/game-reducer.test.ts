@@ -80,26 +80,28 @@ describe("gameReducer", () => {
       expect(imageCards).toHaveLength(4); // 2 images × 2 = 4 cards
     });
 
-    it("cards have imageUrl set for image pairs", () => {
+    it("cards have imageUrl set for custom and emoji image pairs", () => {
       const imageUrls = ["blob:img1"];
       const state = gameReducer(initialState, {
         type: "START_GAME",
         payload: { config: { rows: 2, cols: 2 }, imageUrls },
       });
+      // 1 custom pair + 1 emoji pair = all 4 cards have images
       const imageCards = state.cards.filter((c) => c.imageUrl);
-      const symbolOnlyCards = state.cards.filter((c) => !c.imageUrl);
-      expect(imageCards).toHaveLength(2);
-      expect(symbolOnlyCards).toHaveLength(2);
+      expect(imageCards).toHaveLength(4);
+      const customCards = state.cards.filter((c) => c.imageUrl === "blob:img1");
+      expect(customCards).toHaveLength(2);
     });
 
-    it("works with no imageUrls (backward compatible)", () => {
+    it("works with no imageUrls (uses emoji defaults)", () => {
       const state = gameReducer(initialState, {
         type: "START_GAME",
         payload: { config: { rows: 2, cols: 2 } },
       });
       expect(state.phase).toBe("playing");
+      // Emoji images fill all pairs
       const imageCards = state.cards.filter((c) => c.imageUrl);
-      expect(imageCards).toHaveLength(0);
+      expect(imageCards).toHaveLength(4);
     });
   });
 
