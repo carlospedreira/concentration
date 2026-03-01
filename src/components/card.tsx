@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { CardState } from "../types/game";
 
 interface CardComponentProps {
@@ -9,9 +10,11 @@ interface CardComponentProps {
 }
 
 export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardComponentProps) {
+  const [imgError, setImgError] = useState(false);
   const isRevealed = state === "faceUp" || state === "matched";
   const isClickable = state === "faceDown";
   const isMatched = state === "matched";
+  const showImage = imageUrl && !imgError;
 
   const handleClick = () => {
     if (isClickable) {
@@ -61,11 +64,12 @@ export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardCom
           `}
         >
           {isRevealed && (
-            imageUrl ? (
+            showImage ? (
               <img
                 src={imageUrl}
                 alt="Card image"
                 className="w-full h-full object-cover rounded-card"
+                onError={() => setImgError(true)}
               />
             ) : (
               <span className="text-2xl sm:text-3xl md:text-4xl select-none">{symbol}</span>
