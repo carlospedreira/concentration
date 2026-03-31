@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { BoardConfig, UploadedImage } from "../types/game";
 import { validateBoardConfig } from "../utils/validation";
+import { loadGridSize } from "../utils/grid-storage";
 import { ImageUploadPanel } from "./image-upload-panel";
 
 interface SetupScreenProps {
@@ -18,8 +19,9 @@ export function SetupScreen({
   onReorderImage,
   onStart,
 }: SetupScreenProps) {
-  const [rows, setRows] = useState(4);
-  const [cols, setCols] = useState(4);
+  const saved = loadGridSize();
+  const [rows, setRows] = useState(saved.rows);
+  const [cols, setCols] = useState(saved.cols);
   const [error, setError] = useState<string | null>(null);
 
   const pairCount = (rows * cols) / 2;
