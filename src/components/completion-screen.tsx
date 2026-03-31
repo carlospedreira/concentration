@@ -36,7 +36,7 @@ export function CompletionScreen({ moveCount, onPlayAgain }: CompletionScreenPro
         className="
           bg-brand-600 text-white font-bold py-3.5 px-10 rounded-button
           shadow-button transition-all duration-150
-          hover:bg-brand-500 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_-4px_rgb(0_0_0/0.2)]
+          hover:bg-brand-500 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_-4px_rgb(255_255_255/0.1)]
           focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500
           active:scale-[0.98] active:translate-y-0 active:shadow-none
         "
