@@ -27,43 +27,43 @@ describe("SetupScreen", () => {
     localStorage.clear();
   });
 
-  it("renders rows and cols inputs", () => {
+  it("does not render number inputs for rows or columns", () => {
     renderSetup();
-    expect(screen.getByLabelText(/rows/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/columns/i)).toBeInTheDocument();
+    expect(screen.queryByRole("spinbutton")).toBeNull();
   });
 
-  it("calls onStart with config and imageUrls for valid input", async () => {
+  it("renders 9 grid size option buttons", () => {
+    renderSetup();
+    expect(screen.getByText("3x4")).toBeInTheDocument();
+    expect(screen.getByText("4x4")).toBeInTheDocument();
+    expect(screen.getByText("8x8")).toBeInTheDocument();
+    // Count all preset buttons (they have aria-pressed attribute)
+    const presetButtons = screen.getAllByRole("button", { pressed: true })
+      .concat(screen.getAllByRole("button", { pressed: false }))
+      .filter((btn) => btn.hasAttribute("aria-pressed"));
+    expect(presetButtons).toHaveLength(9);
+  });
+
+  it("calls onStart with correct config from selected preset", async () => {
     const onStart = vi.fn();
     const user = userEvent.setup();
     renderSetup({ onStart });
 
-    const rowsInput = screen.getByLabelText(/rows/i);
-    const colsInput = screen.getByLabelText(/columns/i);
+    // Select 5x6 (index 4, 30 cards)
+    await user.click(screen.getByText("5x6"));
+    await user.click(screen.getByRole("button", { name: /start/i }));
 
-    await user.clear(rowsInput);
-    await user.type(rowsInput, "4");
-    await user.clear(colsInput);
-    await user.type(colsInput, "4");
+    expect(onStart).toHaveBeenCalledWith({ rows: 5, cols: 6 }, []);
+  });
+
+  it("calls onStart with default 4x4 when no preset is changed", async () => {
+    const onStart = vi.fn();
+    const user = userEvent.setup();
+    renderSetup({ onStart });
+
     await user.click(screen.getByRole("button", { name: /start/i }));
 
     expect(onStart).toHaveBeenCalledWith({ rows: 4, cols: 4 }, []);
-  });
-
-  it("shows error for invalid config (odd total)", async () => {
-    const user = userEvent.setup();
-    renderSetup();
-
-    const rowsInput = screen.getByLabelText(/rows/i);
-    const colsInput = screen.getByLabelText(/columns/i);
-
-    await user.clear(rowsInput);
-    await user.type(rowsInput, "3");
-    await user.clear(colsInput);
-    await user.type(colsInput, "3");
-    await user.click(screen.getByRole("button", { name: /start/i }));
-
-    expect(screen.getByRole("alert")).toBeInTheDocument();
   });
 
   describe("pair count messaging", () => {
@@ -97,35 +97,25 @@ describe("SetupScreen", () => {
       renderSetup({ images });
       expect(screen.getByText(/Only 8 of 10 images will be used/)).toBeInTheDocument();
     });
-  });
 
-  describe("board size change recalculates pair count", () => {
-    it("pair count message updates when rows change", async () => {
+    it("pair count updates when selecting a different preset", async () => {
       const user = userEvent.setup();
-      // 3 images, default 4x4 = 8 pairs → "3 of 8 pairs"
       const images = [makeImage("1", "a.jpg"), makeImage("2", "b.jpg"), makeImage("3", "c.jpg")];
       renderSetup({ images });
       expect(screen.getByText(/3 of 8 pairs will use your images/)).toBeInTheDocument();
 
-      // Change to 2x2 = 2 pairs → excess: "Only 2 of 3 images will be used"
-      const rowsInput = screen.getByLabelText(/rows/i);
-      const colsInput = screen.getByLabelText(/columns/i);
-      await user.clear(rowsInput);
-      await user.type(rowsInput, "2");
-      await user.clear(colsInput);
-      await user.type(colsInput, "2");
-      expect(screen.getByText(/Only 2 of 3 images will be used/)).toBeInTheDocument();
+      // Select 3x4 = 6 pairs
+      await user.click(screen.getByText("3x4"));
+      expect(screen.getByText(/3 of 6 pairs will use your images/)).toBeInTheDocument();
     });
   });
 
   describe("image persistence across resets", () => {
     it("images are passed through and displayed after remount", () => {
-      // Simulates: images survive game reset because they're in parent state
       const images = [makeImage("1", "photo1.jpg"), makeImage("2", "photo2.jpg")];
       const { unmount } = renderSetup({ images });
       expect(screen.getAllByRole("img")).toHaveLength(2);
 
-      // Remount with same images (simulating game reset returning to setup)
       unmount();
       renderSetup({ images });
       expect(screen.getAllByRole("img")).toHaveLength(2);
@@ -141,23 +131,30 @@ describe("SetupScreen", () => {
   });
 
   describe("grid size persistence", () => {
-    it("initializes with stored grid size from localStorage", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: 3, cols: 4 }));
+    it("initializes with stored preset from localStorage", () => {
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: 4 }));
       renderSetup();
-
-      const rowsInput = screen.getByLabelText(/rows/i) as HTMLInputElement;
-      const colsInput = screen.getByLabelText(/columns/i) as HTMLInputElement;
-      expect(rowsInput.value).toBe("3");
-      expect(colsInput.value).toBe("4");
+      // 5x6 should be selected (aria-pressed=true)
+      const button5x6 = screen.getByText("5x6").closest("button");
+      expect(button5x6).toHaveAttribute("aria-pressed", "true");
     });
 
     it("initializes with default 4x4 when localStorage is empty", () => {
       renderSetup();
+      const button4x4 = screen.getByText("4x4").closest("button");
+      expect(button4x4).toHaveAttribute("aria-pressed", "true");
+    });
 
-      const rowsInput = screen.getByLabelText(/rows/i) as HTMLInputElement;
-      const colsInput = screen.getByLabelText(/columns/i) as HTMLInputElement;
-      expect(rowsInput.value).toBe("4");
-      expect(colsInput.value).toBe("4");
+    it("saves preset index to localStorage when Start is clicked", async () => {
+      const user = userEvent.setup();
+      renderSetup();
+
+      await user.click(screen.getByText("6x6"));
+      await user.click(screen.getByRole("button", { name: /start/i }));
+
+      const stored = localStorage.getItem(GRID_STORAGE_KEY);
+      expect(stored).not.toBeNull();
+      expect(JSON.parse(stored!)).toEqual({ presetIndex: 5 });
     });
   });
 });

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import type { BoardConfig, UploadedImage } from "../types/game";
-import { validateBoardConfig } from "../utils/validation";
-import { loadGridSize } from "../utils/grid-storage";
+import type { UploadedImage, BoardConfig } from "../types/game";
+import { GRID_PRESETS, DEFAULT_PRESET_INDEX } from "../utils/grid-presets";
+import { loadPresetIndex, savePresetIndex } from "../utils/grid-storage";
+import { GridSizeSelector } from "./grid-size-selector";
 import { ImageUploadPanel } from "./image-upload-panel";
 
 interface SetupScreenProps {
@@ -19,21 +20,14 @@ export function SetupScreen({
   onReorderImage,
   onStart,
 }: SetupScreenProps) {
-  const saved = loadGridSize();
-  const [rows, setRows] = useState(saved.rows);
-  const [cols, setCols] = useState(saved.cols);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState(loadPresetIndex);
 
-  const pairCount = (rows * cols) / 2;
+  const preset = GRID_PRESETS[selectedIndex] ?? GRID_PRESETS[DEFAULT_PRESET_INDEX];
+  const pairCount = preset.cards / 2;
 
-  const handleStart = () => {
-    const config = { rows, cols };
-    const result = validateBoardConfig(config);
-    if (!result.valid) {
-      setError(result.error!);
-      return;
-    }
-    setError(null);
+  const handleStart = (): void => {
+    savePresetIndex(selectedIndex);
+    const config: BoardConfig = { rows: preset.rows, cols: preset.cols };
     const imageUrls = images.map((img) => img.url);
     onStart(config, imageUrls);
   };
@@ -50,47 +44,13 @@ export function SetupScreen({
       </div>
 
       <div className="flex flex-col gap-5 w-full max-w-sm bg-surface-raised rounded-2xl p-6 shadow-card">
-        <div className="flex gap-4">
-          <div className="flex flex-col gap-1.5 flex-1">
-            <label htmlFor="rows" className="text-sm font-semibold text-text-secondary">
-              Rows
-            </label>
-            <input
-              id="rows"
-              type="number"
-              min={1}
-              max={10}
-              value={rows}
-              onChange={(e) => setRows(Number(e.target.value))}
-              className="
-                border-2 border-brand-100 rounded-input px-3 py-2.5 text-center text-lg
-                font-semibold text-text-primary bg-surface-raised
-                outline-none transition-all duration-150
-                hover:border-brand-200
-                focus:border-brand-400 focus:ring-4 focus:ring-brand-100
-              "
-            />
-          </div>
-          <div className="flex flex-col gap-1.5 flex-1">
-            <label htmlFor="cols" className="text-sm font-semibold text-text-secondary">
-              Columns
-            </label>
-            <input
-              id="cols"
-              type="number"
-              min={1}
-              max={10}
-              value={cols}
-              onChange={(e) => setCols(Number(e.target.value))}
-              className="
-                border-2 border-brand-100 rounded-input px-3 py-2.5 text-center text-lg
-                font-semibold text-text-primary bg-surface-raised
-                outline-none transition-all duration-150
-                hover:border-brand-200
-                focus:border-brand-400 focus:ring-4 focus:ring-brand-100
-              "
-            />
-          </div>
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-semibold text-text-secondary">Board Size</span>
+          <GridSizeSelector
+            presets={GRID_PRESETS}
+            selectedIndex={selectedIndex}
+            onChange={setSelectedIndex}
+          />
         </div>
 
         <ImageUploadPanel
@@ -115,12 +75,6 @@ export function SetupScreen({
         {images.length > pairCount && (
           <p className="text-sm text-amber-600 text-center">
             Only {pairCount} of {images.length} images will be used.
-          </p>
-        )}
-
-        {error && (
-          <p role="alert" className="text-red-600 text-sm text-center">
-            {error}
           </p>
         )}
 

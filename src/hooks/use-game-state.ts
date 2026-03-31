@@ -1,7 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { gameReducer, initialState } from "../reducers/game-reducer";
 import type { BoardConfig } from "../types/game";
-import { saveGridSize } from "../utils/grid-storage";
 
 export function useGameState() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
@@ -11,12 +10,6 @@ export function useGameState() {
       dispatch({ type: "CHECK_MATCH" });
     }
   }, [state.phase]);
-
-  useEffect(() => {
-    if (state.phase === "complete") {
-      saveGridSize(state.config);
-    }
-  }, [state.phase, state.config]);
 
   useEffect(() => {
     if (state.phase === "revealing") {
