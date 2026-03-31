@@ -30,9 +30,9 @@ npm test && npm run lint
 TypeScript (strict mode, ES2022 target): Follow standard conventions
 
 ## Recent Changes
+- 009-quick-replay: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
 - 008-dark-theme: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
 - 007-preset-grid-sizes: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
-- 006-optimize-game-layout: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
 
 
 <!-- MANUAL ADDITIONS START -->

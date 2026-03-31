@@ -1,9 +1,10 @@
 interface CompletionScreenProps {
   moveCount: number;
   onPlayAgain: () => void;
+  onChangeSize: () => void;
 }
 
-export function CompletionScreen({ moveCount, onPlayAgain }: CompletionScreenProps) {
+export function CompletionScreen({ moveCount, onPlayAgain, onChangeSize }: CompletionScreenProps) {
   return (
     <div className="flex flex-col items-center gap-8 py-6 sm:py-8 animate-screen-enter">
       {/* Trophy with particle bursts */}
@@ -42,6 +43,12 @@ export function CompletionScreen({ moveCount, onPlayAgain }: CompletionScreenPro
         "
       >
         Play Again
+      </button>
+      <button
+        onClick={onChangeSize}
+        className="text-sm font-semibold text-text-secondary hover:text-brand-600 transition-colors"
+      >
+        Change Size
       </button>
     </div>
   );

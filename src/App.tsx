@@ -75,7 +75,11 @@ export default function App() {
       )}
 
       {state.phase === "complete" && (
-        <CompletionScreen moveCount={state.moveCount} onPlayAgain={reset} />
+        <CompletionScreen
+          moveCount={state.moveCount}
+          onPlayAgain={() => startGame(state.config, images.map((img) => img.url))}
+          onChangeSize={reset}
+        />
       )}
 
       {state.phase !== "setup" && state.phase !== "complete" && (
