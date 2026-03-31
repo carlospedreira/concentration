@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import {
-  loadGridSize,
-  saveGridSize,
+  loadPresetIndex,
+  savePresetIndex,
   GRID_STORAGE_KEY,
 } from "../../src/utils/grid-storage";
 
@@ -10,60 +10,60 @@ describe("grid-storage", () => {
     localStorage.clear();
   });
 
-  describe("loadGridSize", () => {
-    it("returns default { rows: 4, cols: 4 } when localStorage is empty", () => {
-      expect(loadGridSize()).toEqual({ rows: 4, cols: 4 });
+  describe("loadPresetIndex", () => {
+    it("returns default index (1) when localStorage is empty", () => {
+      expect(loadPresetIndex()).toBe(1);
     });
 
-    it("returns stored config when valid data exists", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: 3, cols: 4 }));
-      expect(loadGridSize()).toEqual({ rows: 3, cols: 4 });
+    it("returns stored index when valid", () => {
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: 5 }));
+      expect(loadPresetIndex()).toBe(5);
+    });
+
+    it("returns default when stored data is old { rows, cols } format", () => {
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: 4, cols: 4 }));
+      expect(loadPresetIndex()).toBe(1);
     });
 
     it("returns default when stored JSON is malformed", () => {
       localStorage.setItem(GRID_STORAGE_KEY, "not-json{{{");
-      expect(loadGridSize()).toEqual({ rows: 4, cols: 4 });
+      expect(loadPresetIndex()).toBe(1);
     });
 
-    it("returns default when stored values are out of range", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: 0, cols: 4 }));
-      expect(loadGridSize()).toEqual({ rows: 4, cols: 4 });
+    it("returns default when presetIndex is out of bounds (too high)", () => {
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: 99 }));
+      expect(loadPresetIndex()).toBe(1);
     });
 
-    it("returns default when rows * cols is odd", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: 3, cols: 3 }));
-      expect(loadGridSize()).toEqual({ rows: 4, cols: 4 });
+    it("returns default when presetIndex is negative", () => {
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: -1 }));
+      expect(loadPresetIndex()).toBe(1);
     });
 
-    it("returns default when stored object is missing rows", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ cols: 4 }));
-      expect(loadGridSize()).toEqual({ rows: 4, cols: 4 });
-    });
-
-    it("returns default when stored values are not numbers", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: "a", cols: "b" }));
-      expect(loadGridSize()).toEqual({ rows: 4, cols: 4 });
+    it("returns default when presetIndex is not a number", () => {
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: "abc" }));
+      expect(loadPresetIndex()).toBe(1);
     });
   });
 
-  describe("saveGridSize", () => {
-    it("writes valid JSON string to localStorage under the correct key", () => {
-      saveGridSize({ rows: 3, cols: 4 });
+  describe("savePresetIndex", () => {
+    it("writes { presetIndex } JSON to localStorage", () => {
+      savePresetIndex(5);
       const stored = localStorage.getItem(GRID_STORAGE_KEY);
-      expect(stored).toBe(JSON.stringify({ rows: 3, cols: 4 }));
+      expect(stored).toBe(JSON.stringify({ presetIndex: 5 }));
     });
 
-    it("uses localStorage (not sessionStorage) for cross-session persistence", () => {
-      saveGridSize({ rows: 6, cols: 6 });
+    it("uses localStorage not sessionStorage", () => {
+      savePresetIndex(3);
       expect(localStorage.getItem(GRID_STORAGE_KEY)).not.toBeNull();
       expect(sessionStorage.getItem(GRID_STORAGE_KEY)).toBeNull();
     });
   });
 
   describe("round-trip", () => {
-    it("saveGridSize then loadGridSize returns same values", () => {
-      saveGridSize({ rows: 5, cols: 6 });
-      expect(loadGridSize()).toEqual({ rows: 5, cols: 6 });
+    it("savePresetIndex then loadPresetIndex returns same index", () => {
+      savePresetIndex(7);
+      expect(loadPresetIndex()).toBe(7);
     });
   });
 });

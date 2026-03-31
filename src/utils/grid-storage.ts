@@ -1,43 +1,34 @@
-import type { BoardConfig } from "../types/game";
-import { validateBoardConfig } from "./validation";
+import { GRID_PRESETS, DEFAULT_PRESET_INDEX } from "./grid-presets";
 
 export const GRID_STORAGE_KEY = "concentration:gridSize";
 
-const DEFAULT_GRID_SIZE: BoardConfig = { rows: 4, cols: 4 };
-
-export function loadGridSize(): BoardConfig {
+export function loadPresetIndex(): number {
   try {
     const raw = localStorage.getItem(GRID_STORAGE_KEY);
-    if (raw === null) return DEFAULT_GRID_SIZE;
+    if (raw === null) return DEFAULT_PRESET_INDEX;
 
     const parsed: unknown = JSON.parse(raw);
     if (
       typeof parsed !== "object" ||
       parsed === null ||
-      !("rows" in parsed) ||
-      !("cols" in parsed)
+      !("presetIndex" in parsed)
     ) {
-      return DEFAULT_GRID_SIZE;
+      return DEFAULT_PRESET_INDEX;
     }
 
-    const { rows, cols } = parsed as { rows: unknown; cols: unknown };
-    if (typeof rows !== "number" || typeof cols !== "number") {
-      return DEFAULT_GRID_SIZE;
-    }
+    const { presetIndex } = parsed as { presetIndex: unknown };
+    if (typeof presetIndex !== "number") return DEFAULT_PRESET_INDEX;
+    if (presetIndex < 0 || presetIndex >= GRID_PRESETS.length) return DEFAULT_PRESET_INDEX;
 
-    const config: BoardConfig = { rows, cols };
-    const result = validateBoardConfig(config);
-    if (!result.valid) return DEFAULT_GRID_SIZE;
-
-    return config;
+    return presetIndex;
   } catch {
-    return DEFAULT_GRID_SIZE;
+    return DEFAULT_PRESET_INDEX;
   }
 }
 
-export function saveGridSize(config: BoardConfig): void {
+export function savePresetIndex(index: number): void {
   localStorage.setItem(
     GRID_STORAGE_KEY,
-    JSON.stringify({ rows: config.rows, cols: config.cols }),
+    JSON.stringify({ presetIndex: index }),
   );
 }

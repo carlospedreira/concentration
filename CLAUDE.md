@@ -10,6 +10,7 @@ Auto-generated from all feature plans. Last updated: 2026-02-28
 - TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3 (with `import.meta.glob` for image imports) (004-disney-default-cards)
 - N/A (no storage changes — images are bundled static assets) (004-disney-default-cards)
 - `localStorage` (new — first persistent storage in the app) (005-persist-grid-size)
+- `localStorage` (adapting existing `grid-storage.ts` from feature 005) (007-preset-grid-sizes)
 
 - TypeScript (strict mode, ES2022 target) + React 18, Tailwind CSS v4, vite-plugin-pwa (001-core-game-logic)
 
@@ -29,9 +30,9 @@ npm test && npm run lint
 TypeScript (strict mode, ES2022 target): Follow standard conventions
 
 ## Recent Changes
+- 007-preset-grid-sizes: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
 - 006-optimize-game-layout: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
 - 005-persist-grid-size: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
-- 004-disney-default-cards: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3 (with `import.meta.glob` for image imports)
 
 
 <!-- MANUAL ADDITIONS START -->
