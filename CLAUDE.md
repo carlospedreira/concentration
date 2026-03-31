@@ -29,9 +29,9 @@ npm test && npm run lint
 TypeScript (strict mode, ES2022 target): Follow standard conventions
 
 ## Recent Changes
+- 006-optimize-game-layout: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
 - 005-persist-grid-size: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3
 - 004-disney-default-cards: Added TypeScript 5.9 (strict mode, ES2022 target) + React 19, Tailwind CSS v4, Vite 7.3 (with `import.meta.glob` for image imports)
-- 003-ui-visual-redesign: Added TypeScript (strict mode, ES2022 target) + React 19, Tailwind CSS v4 (`@tailwindcss/vite`), `@fontsource-variable/fredoka` (NEW), `@fontsource-variable/nunito` (NEW)
 
 
 <!-- MANUAL ADDITIONS START -->

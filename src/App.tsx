@@ -62,31 +62,33 @@ export default function App() {
     [startGame],
   );
 
-  if (state.phase === "setup") {
-    return (
-      <SetupScreen
-        images={images}
-        onAddImages={handleAddImages}
-        onRemoveImage={handleRemoveImage}
-        onReorderImage={handleReorderImage}
-        onStart={handleStart}
-      />
-    );
-  }
-
-  if (state.phase === "complete") {
-    return <CompletionScreen moveCount={state.moveCount} onPlayAgain={reset} />;
-  }
-
   return (
-    <div className="min-h-screen flex flex-col items-center py-4 gap-4">
-      <MoveCounter moveCount={state.moveCount} />
-      <GameBoard
-        cards={state.cards}
-        cols={state.config.cols}
-        onSelectCard={selectCard}
-        onReset={reset}
-      />
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen">
+      {state.phase === "setup" && (
+        <SetupScreen
+          images={images}
+          onAddImages={handleAddImages}
+          onRemoveImage={handleRemoveImage}
+          onReorderImage={handleReorderImage}
+          onStart={handleStart}
+        />
+      )}
+
+      {state.phase === "complete" && (
+        <CompletionScreen moveCount={state.moveCount} onPlayAgain={reset} />
+      )}
+
+      {state.phase !== "setup" && state.phase !== "complete" && (
+        <div className="flex flex-col items-center py-4 gap-4">
+          <MoveCounter moveCount={state.moveCount} />
+          <GameBoard
+            cards={state.cards}
+            cols={state.config.cols}
+            onSelectCard={selectCard}
+            onReset={reset}
+          />
+        </div>
+      )}
     </div>
   );
 }

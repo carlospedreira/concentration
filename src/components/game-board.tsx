@@ -8,12 +8,18 @@ interface GameBoardProps {
   onReset: () => void;
 }
 
+function computeMaxWidth(cols: number): number {
+  return Math.min(cols * 100 + (cols - 1) * 12 + 40, 1152);
+}
+
 export function GameBoard({ cards, cols, onSelectCard, onReset }: GameBoardProps) {
+  const maxWidth = computeMaxWidth(cols);
+
   return (
     <div className="flex flex-col items-center gap-4 sm:gap-6 w-full animate-screen-enter">
       <div
-        className="grid gap-1.5 sm:gap-2.5 md:gap-3 p-3 sm:p-5 w-full max-w-2xl mx-auto"
-        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+        className="grid gap-1.5 sm:gap-2.5 md:gap-3 p-3 sm:p-5 w-full mx-auto"
+        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, maxWidth }}
       >
         {cards.map((card) => (
           <CardComponent

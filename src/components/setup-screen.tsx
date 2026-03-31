@@ -39,7 +39,7 @@ export function SetupScreen({
   };
 
   return (
-    <div className="flex flex-col items-center gap-8 p-6 sm:p-8 animate-screen-enter">
+    <div className="flex flex-col items-center gap-8 py-6 sm:py-8 animate-screen-enter">
       <div className="text-center">
         <h1 className="text-4xl sm:text-5xl font-display font-semibold text-brand-800 tracking-tight">
           Concentration

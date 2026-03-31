@@ -5,7 +5,7 @@ interface CompletionScreenProps {
 
 export function CompletionScreen({ moveCount, onPlayAgain }: CompletionScreenProps) {
   return (
-    <div className="flex flex-col items-center gap-8 p-6 sm:p-8 animate-screen-enter">
+    <div className="flex flex-col items-center gap-8 py-6 sm:py-8 animate-screen-enter">
       {/* Trophy with particle bursts */}
       <div className="relative">
         <div className="text-7xl sm:text-8xl animate-trophy-bounce animate-trophy-pulse">

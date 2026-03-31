@@ -134,6 +134,12 @@ describe("SetupScreen", () => {
     });
   });
 
+  it("form container retains max-w-sm class for narrow layout", () => {
+    renderSetup();
+    const formCard = screen.getByRole("button", { name: /start/i }).closest("div.max-w-sm");
+    expect(formCard).not.toBeNull();
+  });
+
   describe("grid size persistence", () => {
     it("initializes with stored grid size from localStorage", () => {
       localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: 3, cols: 4 }));

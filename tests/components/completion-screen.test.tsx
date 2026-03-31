@@ -16,6 +16,13 @@ describe("CompletionScreen", () => {
     ).toBeInTheDocument();
   });
 
+  it("wrapper div has items-center for centering", () => {
+    render(<CompletionScreen moveCount={5} onPlayAgain={vi.fn()} />);
+    const button = screen.getByRole("button", { name: /play again/i });
+    const wrapper = button.closest("div.items-center");
+    expect(wrapper).not.toBeNull();
+  });
+
   it("calls onPlayAgain when button clicked", async () => {
     const onPlayAgain = vi.fn();
     const user = userEvent.setup();
