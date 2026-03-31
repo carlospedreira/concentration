@@ -1,8 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SetupScreen } from "../../src/components/setup-screen";
 import type { UploadedImage } from "../../src/types/game";
+import { GRID_STORAGE_KEY } from "../../src/utils/grid-storage";
 
 function makeImage(id: string, name: string): UploadedImage {
   const file = new File(["data"], name, { type: "image/jpeg" });
@@ -22,6 +23,10 @@ function renderSetup(overrides = {}) {
 }
 
 describe("SetupScreen", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it("renders rows and cols inputs", () => {
     renderSetup();
     expect(screen.getByLabelText(/rows/i)).toBeInTheDocument();
@@ -126,6 +131,27 @@ describe("SetupScreen", () => {
       expect(screen.getAllByRole("img")).toHaveLength(2);
       expect(screen.getByText("photo1.jpg")).toBeInTheDocument();
       expect(screen.getByText("photo2.jpg")).toBeInTheDocument();
+    });
+  });
+
+  describe("grid size persistence", () => {
+    it("initializes with stored grid size from localStorage", () => {
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ rows: 3, cols: 4 }));
+      renderSetup();
+
+      const rowsInput = screen.getByLabelText(/rows/i) as HTMLInputElement;
+      const colsInput = screen.getByLabelText(/columns/i) as HTMLInputElement;
+      expect(rowsInput.value).toBe("3");
+      expect(colsInput.value).toBe("4");
+    });
+
+    it("initializes with default 4x4 when localStorage is empty", () => {
+      renderSetup();
+
+      const rowsInput = screen.getByLabelText(/rows/i) as HTMLInputElement;
+      const colsInput = screen.getByLabelText(/columns/i) as HTMLInputElement;
+      expect(rowsInput.value).toBe("4");
+      expect(colsInput.value).toBe("4");
     });
   });
 });
