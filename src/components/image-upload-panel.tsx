@@ -75,7 +75,7 @@ export function ImageUploadPanel({
       />
 
       {error && (
-        <p role="alert" className="text-red-600 text-sm">
+        <p role="alert" className="text-red-400 text-sm">
           {error}
         </p>
       )}
@@ -126,7 +126,7 @@ export function ImageUploadPanel({
                   onClick={() => onRemove(image.id)}
                   className="
                     p-1.5 rounded text-text-muted transition-colors duration-150
-                    hover:text-red-500 hover:bg-red-50
+                    hover:text-red-500 hover:bg-red-950
                     focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-red-500
                   "
                   aria-label={`Remove ${image.name}`}

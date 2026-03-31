@@ -13,8 +13,8 @@ export default defineConfig({
         name: "Concentration",
         short_name: "Concentration",
         description: "A memory card matching game",
-        theme_color: "#4f46e5",
-        background_color: "#ffffff",
+        theme_color: "#1a1625",
+        background_color: "#1a1625",
         display: "standalone",
         icons: [
           {
