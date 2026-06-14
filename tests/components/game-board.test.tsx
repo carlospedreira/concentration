@@ -4,11 +4,15 @@ import { GameBoard } from "../../src/components/game-board";
 import type { Card } from "../../src/types/game";
 
 function makeCards(count: number): Card[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: i,
-    symbol: String.fromCharCode(65 + (i % (count / 2))),
-    state: "faceDown" as const,
-  }));
+  return Array.from({ length: count }, (_, i) => {
+    const pair = i % (count / 2);
+    return {
+      id: i,
+      color: `hsl(${pair * 20} 70% 55%)`,
+      colorName: `Color ${pair}`,
+      state: "faceDown" as const,
+    };
+  });
 }
 
 function getGridContainer(): HTMLElement {

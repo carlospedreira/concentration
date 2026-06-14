@@ -1,25 +1,14 @@
 import { useState } from "react";
-import type { UploadedImage, BoardConfig } from "../types/game";
+import type { BoardConfig } from "../types/game";
 import { GRID_PRESETS, DEFAULT_PRESET_INDEX } from "../utils/grid-presets";
 import { loadPresetIndex, savePresetIndex } from "../utils/grid-storage";
 import { GridSizeSelector } from "./grid-size-selector";
-import { ImageUploadPanel } from "./image-upload-panel";
 
 interface SetupScreenProps {
-  images: readonly UploadedImage[];
-  onAddImages: (files: File[]) => void;
-  onRemoveImage: (id: string) => void;
-  onReorderImage: (id: string, direction: "up" | "down") => void;
-  onStart: (config: BoardConfig, imageUrls: readonly string[]) => void;
+  onStart: (config: BoardConfig) => void;
 }
 
-export function SetupScreen({
-  images,
-  onAddImages,
-  onRemoveImage,
-  onReorderImage,
-  onStart,
-}: SetupScreenProps) {
+export function SetupScreen({ onStart }: SetupScreenProps) {
   const [selectedIndex, setSelectedIndex] = useState(loadPresetIndex);
 
   const preset = GRID_PRESETS[selectedIndex] ?? GRID_PRESETS[DEFAULT_PRESET_INDEX];
@@ -27,9 +16,7 @@ export function SetupScreen({
 
   const handleStart = (): void => {
     savePresetIndex(selectedIndex);
-    const config: BoardConfig = { rows: preset.rows, cols: preset.cols };
-    const imageUrls = images.map((img) => img.url);
-    onStart(config, imageUrls);
+    onStart({ rows: preset.rows, cols: preset.cols });
   };
 
   return (
@@ -39,7 +26,7 @@ export function SetupScreen({
           Concentration
         </h1>
         <p className="mt-2 text-text-secondary text-sm sm:text-base">
-          Match pairs to win. How few moves can you do it in?
+          Match pairs of colors to win. How few moves can you do it in?
         </p>
       </div>
 
@@ -53,30 +40,9 @@ export function SetupScreen({
           />
         </div>
 
-        <ImageUploadPanel
-          images={images}
-          onAdd={onAddImages}
-          onRemove={onRemoveImage}
-          onReorder={onReorderImage}
-        />
-
-        {images.length > 0 && images.length < pairCount && (
-          <p className="text-sm text-text-secondary text-center">
-            {images.length} of {pairCount} pairs will use your images; {pairCount - images.length} will use default symbols.
-          </p>
-        )}
-
-        {images.length > 0 && images.length === pairCount && (
-          <p className="text-sm text-text-secondary text-center">
-            All {pairCount} pairs will use your images.
-          </p>
-        )}
-
-        {images.length > pairCount && (
-          <p className="text-sm text-amber-400 text-center">
-            Only {pairCount} of {images.length} images will be used.
-          </p>
-        )}
+        <p className="text-sm text-text-secondary text-center">
+          {pairCount} color pairs to match.
+        </p>
 
         <button
           onClick={handleStart}
