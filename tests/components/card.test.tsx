@@ -4,12 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { CardComponent } from "../../src/components/card";
 
 const RED = "hsl(0 78% 64%)";
+const BLUE = "hsl(222 82% 58%)";
 
 function renderCard(props: Partial<React.ComponentProps<typeof CardComponent>> = {}) {
   return render(
     <CardComponent
       id={0}
-      color={RED}
+      colors={[RED]}
       colorName="Light Red"
       state="faceDown"
       onSelect={vi.fn()}
@@ -40,6 +41,13 @@ describe("CardComponent", () => {
     const front = screen.getByTestId("face-2");
     expect(front).toHaveStyle({ backgroundColor: RED });
     expect(front.className).toContain("card-shimmer");
+  });
+
+  it("renders a two-tone split fill when given two colors", () => {
+    renderCard({ id: 6, state: "faceUp", colors: [RED, BLUE], colorName: "Red & Blue" });
+    const front = screen.getByTestId("face-6");
+    expect(front.style.background).toContain("linear-gradient");
+    expect(screen.getByTestId("card-6")).toHaveAttribute("aria-label", "Red & Blue card");
   });
 
   it("click on face-down card calls onSelect", async () => {

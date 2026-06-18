@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { gameReducer, initialState } from "../../src/reducers/game-reducer";
 import type { Card, GameState } from "../../src/types/game";
 
-function card(id: number, color: string, state: Card["state"]): Card {
-  return { id, color, colorName: color, state };
+function card(id: number, key: string, state: Card["state"]): Card {
+  return { id, colorKey: key, colors: [key], colorName: key, state };
 }
 
 function makePlayingState(overrides?: Partial<GameState>): GameState {
@@ -73,13 +73,14 @@ describe("gameReducer", () => {
       }
     });
 
-    it("generates cards that each carry a color", () => {
+    it("generates cards that each carry a swatch", () => {
       const state = gameReducer(initialState, {
         type: "START_GAME",
         payload: { config: { rows: 2, cols: 2 } },
       });
       for (const c of state.cards) {
-        expect(c.color).toBeTruthy();
+        expect(c.colorKey).toBeTruthy();
+        expect(c.colors.length).toBeGreaterThanOrEqual(1);
       }
     });
   });

@@ -8,7 +8,8 @@ function makeCards(count: number): Card[] {
     const pair = i % (count / 2);
     return {
       id: i,
-      color: `hsl(${pair * 20} 70% 55%)`,
+      colorKey: `c${pair}`,
+      colors: [`hsl(${pair * 20} 70% 55%)`],
       colorName: `Color ${pair}`,
       state: "faceDown" as const,
     };

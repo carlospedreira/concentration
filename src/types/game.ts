@@ -14,9 +14,11 @@ export interface BoardConfig {
 
 export interface Card {
   readonly id: number;
-  /** CSS color shown when the card is revealed; also the match key. */
-  readonly color: string;
-  /** Accessible label describing the color. */
+  /** Swatch identity — two cards match when their keys are equal. */
+  readonly colorKey: string;
+  /** One CSS color (solid) or two (diagonal split) shown when revealed. */
+  readonly colors: readonly string[];
+  /** Accessible label describing the swatch. */
   readonly colorName: string;
   readonly state: CardState;
 }
