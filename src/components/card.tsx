@@ -1,20 +1,17 @@
-import { useState } from "react";
 import type { CardState } from "../types/game";
 
 interface CardComponentProps {
   id: number;
-  symbol: string;
+  color: string;
+  colorName: string;
   state: CardState;
-  imageUrl?: string;
   onSelect: (id: number) => void;
 }
 
-export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardComponentProps) {
-  const [imgError, setImgError] = useState(false);
+export function CardComponent({ id, color, colorName, state, onSelect }: CardComponentProps) {
   const isRevealed = state === "faceUp" || state === "matched";
   const isClickable = state === "faceDown";
   const isMatched = state === "matched";
-  const showImage = imageUrl && !imgError;
 
   const handleClick = () => {
     if (isClickable) {
@@ -22,10 +19,14 @@ export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardCom
     }
   };
 
+  const label = isRevealed ? `${colorName} card` : "Face-down card";
+
   return (
     <div
       data-testid={`card-${id}`}
       data-state={state}
+      role="button"
+      aria-label={label}
       onClick={handleClick}
       className={`perspective-800 w-full aspect-square ${isClickable ? "group cursor-pointer" : ""}`}
     >
@@ -52,30 +53,18 @@ export function CardComponent({ id, symbol, state, imageUrl, onSelect }: CardCom
           </span>
         </div>
 
-        {/* Card Front (face-up / matched) */}
+        {/* Card Front (face-up / matched) — solid color fill */}
         <div
+          data-testid={`face-${id}`}
+          style={{ backgroundColor: color }}
           className={`
-            backface-hidden rotate-y-180 absolute inset-0 rounded-card
-            flex items-center justify-center overflow-hidden
+            backface-hidden rotate-y-180 absolute inset-0 rounded-card overflow-hidden
             ${isMatched
-              ? "bg-matched border-2 border-matched-border shadow-card-matched card-shimmer"
-              : "bg-surface-warm border border-brand-100 shadow-card"
+              ? "border-2 border-matched-border shadow-card-matched card-shimmer"
+              : "border border-white/10 shadow-card"
             }
           `}
-        >
-          {isRevealed && (
-            showImage ? (
-              <img
-                src={imageUrl}
-                alt="Card image"
-                className="w-full h-full object-cover rounded-card"
-                onError={() => setImgError(true)}
-              />
-            ) : (
-              <span className="text-2xl sm:text-3xl md:text-4xl select-none">{symbol}</span>
-            )
-          )}
-        </div>
+        />
       </div>
     </div>
   );

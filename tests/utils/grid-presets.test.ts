@@ -5,8 +5,14 @@ import {
 } from "../../src/utils/grid-presets";
 
 describe("grid-presets", () => {
-  it("has exactly 9 presets", () => {
-    expect(GRID_PRESETS).toHaveLength(9);
+  it("has exactly 4 presets", () => {
+    expect(GRID_PRESETS).toHaveLength(4);
+  });
+
+  it("no preset exceeds the available color count (12 pairs)", () => {
+    for (const preset of GRID_PRESETS) {
+      expect(preset.cards / 2).toBeLessThanOrEqual(12);
+    }
   });
 
   it("all presets have even total cards", () => {

@@ -13,13 +13,13 @@ export const initialState: GameState = {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "START_GAME": {
-      const { config, imageUrls } = action.payload;
+      const { config } = action.payload;
       const result = validateBoardConfig(config);
       if (!result.valid) return state;
       return {
         phase: "playing",
         config,
-        cards: generateBoard(config, imageUrls),
+        cards: generateBoard(config),
         selectedIndices: [],
         moveCount: 0,
       };
@@ -55,7 +55,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "CHECK_MATCH": {
       if (state.phase !== "checking") return state;
       const [i, j] = state.selectedIndices;
-      const isMatch = state.cards[i].symbol === state.cards[j].symbol;
+      const isMatch = state.cards[i].color === state.cards[j].color;
       const newMoveCount = state.moveCount + 1;
 
       if (isMatch) {

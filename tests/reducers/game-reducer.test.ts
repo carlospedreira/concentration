@@ -2,12 +2,16 @@ import { describe, it, expect } from "vitest";
 import { gameReducer, initialState } from "../../src/reducers/game-reducer";
 import type { Card, GameState } from "../../src/types/game";
 
+function card(id: number, color: string, state: Card["state"]): Card {
+  return { id, color, colorName: color, state };
+}
+
 function makePlayingState(overrides?: Partial<GameState>): GameState {
   const cards: Card[] = [
-    { id: 0, symbol: "A", state: "faceDown" },
-    { id: 1, symbol: "B", state: "faceDown" },
-    { id: 2, symbol: "A", state: "faceDown" },
-    { id: 3, symbol: "B", state: "faceDown" },
+    card(0, "red", "faceDown"),
+    card(1, "blue", "faceDown"),
+    card(2, "red", "faceDown"),
+    card(3, "blue", "faceDown"),
   ];
   return {
     phase: "playing",
@@ -64,44 +68,19 @@ describe("gameReducer", () => {
         type: "START_GAME",
         payload: { config: { rows: 2, cols: 4 } },
       });
-      for (const card of state.cards) {
-        expect(card.state).toBe("faceDown");
+      for (const c of state.cards) {
+        expect(c.state).toBe("faceDown");
       }
     });
 
-    it("passes imageUrls to board generation", () => {
-      const imageUrls = ["blob:img1", "blob:img2"];
-      const state = gameReducer(initialState, {
-        type: "START_GAME",
-        payload: { config: { rows: 2, cols: 2 }, imageUrls },
-      });
-      expect(state.phase).toBe("playing");
-      const imageCards = state.cards.filter((c) => c.imageUrl);
-      expect(imageCards).toHaveLength(4); // 2 images × 2 = 4 cards
-    });
-
-    it("cards have imageUrl set for custom and emoji image pairs", () => {
-      const imageUrls = ["blob:img1"];
-      const state = gameReducer(initialState, {
-        type: "START_GAME",
-        payload: { config: { rows: 2, cols: 2 }, imageUrls },
-      });
-      // 1 custom pair + 1 emoji pair = all 4 cards have images
-      const imageCards = state.cards.filter((c) => c.imageUrl);
-      expect(imageCards).toHaveLength(4);
-      const customCards = state.cards.filter((c) => c.imageUrl === "blob:img1");
-      expect(customCards).toHaveLength(2);
-    });
-
-    it("works with no imageUrls (uses emoji defaults)", () => {
+    it("generates cards that each carry a color", () => {
       const state = gameReducer(initialState, {
         type: "START_GAME",
         payload: { config: { rows: 2, cols: 2 } },
       });
-      expect(state.phase).toBe("playing");
-      // Emoji images fill all pairs
-      const imageCards = state.cards.filter((c) => c.imageUrl);
-      expect(imageCards).toHaveLength(4);
+      for (const c of state.cards) {
+        expect(c.color).toBeTruthy();
+      }
     });
   });
 
@@ -120,10 +99,10 @@ describe("gameReducer", () => {
     it("second card transitions to checking", () => {
       const state = makePlayingState({
         cards: [
-          { id: 0, symbol: "A", state: "faceUp" },
-          { id: 1, symbol: "B", state: "faceDown" },
-          { id: 2, symbol: "A", state: "faceDown" },
-          { id: 3, symbol: "B", state: "faceDown" },
+          card(0, "red", "faceUp"),
+          card(1, "blue", "faceDown"),
+          card(2, "red", "faceDown"),
+          card(3, "blue", "faceDown"),
         ],
         selectedIndices: [0],
       });
@@ -139,10 +118,10 @@ describe("gameReducer", () => {
     it("selecting already faceUp card is ignored", () => {
       const state = makePlayingState({
         cards: [
-          { id: 0, symbol: "A", state: "faceUp" },
-          { id: 1, symbol: "B", state: "faceDown" },
-          { id: 2, symbol: "A", state: "faceDown" },
-          { id: 3, symbol: "B", state: "faceDown" },
+          card(0, "red", "faceUp"),
+          card(1, "blue", "faceDown"),
+          card(2, "red", "faceDown"),
+          card(3, "blue", "faceDown"),
         ],
         selectedIndices: [0],
       });
@@ -156,10 +135,10 @@ describe("gameReducer", () => {
     it("selecting matched card is ignored", () => {
       const state = makePlayingState({
         cards: [
-          { id: 0, symbol: "A", state: "matched" },
-          { id: 1, symbol: "B", state: "faceDown" },
-          { id: 2, symbol: "A", state: "matched" },
-          { id: 3, symbol: "B", state: "faceDown" },
+          card(0, "red", "matched"),
+          card(1, "blue", "faceDown"),
+          card(2, "red", "matched"),
+          card(3, "blue", "faceDown"),
         ],
       });
       const next = gameReducer(state, {
@@ -185,10 +164,10 @@ describe("gameReducer", () => {
         phase: "checking",
         config: { rows: 2, cols: 2 },
         cards: [
-          { id: 0, symbol: "A", state: "faceUp" },
-          { id: 1, symbol: "B", state: "faceDown" },
-          { id: 2, symbol: "A", state: "faceUp" },
-          { id: 3, symbol: "B", state: "faceDown" },
+          card(0, "red", "faceUp"),
+          card(1, "blue", "faceDown"),
+          card(2, "red", "faceUp"),
+          card(3, "blue", "faceDown"),
         ],
         selectedIndices: [0, 2],
         moveCount: 0,
@@ -206,10 +185,10 @@ describe("gameReducer", () => {
         phase: "checking",
         config: { rows: 2, cols: 2 },
         cards: [
-          { id: 0, symbol: "A", state: "faceUp" },
-          { id: 1, symbol: "B", state: "faceUp" },
-          { id: 2, symbol: "A", state: "faceDown" },
-          { id: 3, symbol: "B", state: "faceDown" },
+          card(0, "red", "faceUp"),
+          card(1, "blue", "faceUp"),
+          card(2, "red", "faceDown"),
+          card(3, "blue", "faceDown"),
         ],
         selectedIndices: [0, 1],
         moveCount: 0,
@@ -224,10 +203,10 @@ describe("gameReducer", () => {
         phase: "checking",
         config: { rows: 2, cols: 2 },
         cards: [
-          { id: 0, symbol: "A", state: "matched" },
-          { id: 1, symbol: "B", state: "faceUp" },
-          { id: 2, symbol: "A", state: "matched" },
-          { id: 3, symbol: "B", state: "faceUp" },
+          card(0, "red", "matched"),
+          card(1, "blue", "faceUp"),
+          card(2, "red", "matched"),
+          card(3, "blue", "faceUp"),
         ],
         selectedIndices: [1, 3],
         moveCount: 1,
@@ -244,10 +223,10 @@ describe("gameReducer", () => {
         phase: "checking",
         config: { rows: 2, cols: 2 },
         cards: [
-          { id: 0, symbol: "A", state: "faceUp" },
-          { id: 1, symbol: "B", state: "faceUp" },
-          { id: 2, symbol: "A", state: "faceDown" },
-          { id: 3, symbol: "B", state: "faceDown" },
+          card(0, "red", "faceUp"),
+          card(1, "blue", "faceUp"),
+          card(2, "red", "faceDown"),
+          card(3, "blue", "faceDown"),
         ],
         selectedIndices: [0, 1],
         moveCount: 5,
@@ -263,10 +242,10 @@ describe("gameReducer", () => {
         phase: "revealing",
         config: { rows: 2, cols: 2 },
         cards: [
-          { id: 0, symbol: "A", state: "faceUp" },
-          { id: 1, symbol: "B", state: "faceUp" },
-          { id: 2, symbol: "A", state: "faceDown" },
-          { id: 3, symbol: "B", state: "faceDown" },
+          card(0, "red", "faceUp"),
+          card(1, "blue", "faceUp"),
+          card(2, "red", "faceDown"),
+          card(3, "blue", "faceDown"),
         ],
         selectedIndices: [0, 1],
         moveCount: 1,
@@ -303,10 +282,10 @@ describe("gameReducer", () => {
         phase: "complete",
         moveCount: 10,
         cards: [
-          { id: 0, symbol: "A", state: "matched" },
-          { id: 1, symbol: "B", state: "matched" },
-          { id: 2, symbol: "A", state: "matched" },
-          { id: 3, symbol: "B", state: "matched" },
+          card(0, "red", "matched"),
+          card(1, "blue", "matched"),
+          card(2, "red", "matched"),
+          card(3, "blue", "matched"),
         ],
       });
       const next = gameReducer(state, { type: "RESET" });

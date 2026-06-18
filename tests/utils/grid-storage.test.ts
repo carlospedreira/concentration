@@ -16,8 +16,8 @@ describe("grid-storage", () => {
     });
 
     it("returns stored index when valid", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: 5 }));
-      expect(loadPresetIndex()).toBe(5);
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: 3 }));
+      expect(loadPresetIndex()).toBe(3);
     });
 
     it("returns default when stored data is old { rows, cols } format", () => {
@@ -62,8 +62,8 @@ describe("grid-storage", () => {
 
   describe("round-trip", () => {
     it("savePresetIndex then loadPresetIndex returns same index", () => {
-      savePresetIndex(7);
-      expect(loadPresetIndex()).toBe(7);
+      savePresetIndex(3);
+      expect(loadPresetIndex()).toBe(3);
     });
   });
 });

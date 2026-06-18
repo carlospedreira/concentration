@@ -22,23 +22,15 @@ describe("useGameState", () => {
     expect(result.current.state.cards).toHaveLength(16);
   });
 
-  it("startGame accepts optional imageUrls and forwards to dispatch", () => {
-    const { result } = renderHook(() => useGameState());
-    const imageUrls = ["blob:img1", "blob:img2"];
-    act(() => {
-      result.current.startGame({ rows: 2, cols: 2 }, imageUrls);
-    });
-    expect(result.current.state.phase).toBe("playing");
-    const imageCards = result.current.state.cards.filter((c) => c.imageUrl);
-    expect(imageCards).toHaveLength(4);
-  });
-
-  it("startGame without imageUrls uses emoji defaults", () => {
+  it("startGame builds a board where each card carries a color", () => {
     const { result } = renderHook(() => useGameState());
     act(() => {
       result.current.startGame({ rows: 2, cols: 2 });
     });
-    const imageCards = result.current.state.cards.filter((c) => c.imageUrl);
-    expect(imageCards).toHaveLength(4);
+    expect(result.current.state.phase).toBe("playing");
+    expect(result.current.state.cards).toHaveLength(4);
+    for (const card of result.current.state.cards) {
+      expect(card.color).toBeTruthy();
+    }
   });
 });
