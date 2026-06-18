@@ -23,9 +23,11 @@ const HUE_NAMES: readonly string[] = [
 
 // Two tonal bands. Alternating them while hues step around the wheel keeps
 // neighbouring colors distinguishable even on dense boards (up to 32 pairs).
+// High saturation and a wide lightness gap give the fills strong contrast,
+// both against the dark board and between one another.
 const TONES = [
-  { label: "Light", saturation: 78, lightness: 64 },
-  { label: "Deep", saturation: 70, lightness: 46 },
+  { label: "Light", saturation: 95, lightness: 70 },
+  { label: "Deep", saturation: 90, lightness: 40 },
 ] as const;
 
 function hueName(hue: number): string {
