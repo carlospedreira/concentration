@@ -5,7 +5,7 @@ import { GridSizeSelector } from "../../src/components/grid-size-selector";
 import { GRID_PRESETS } from "../../src/utils/grid-presets";
 
 describe("GridSizeSelector", () => {
-  it("renders exactly 9 buttons", () => {
+  it("renders exactly 4 buttons", () => {
     render(
       <GridSizeSelector
         presets={GRID_PRESETS}
@@ -14,7 +14,7 @@ describe("GridSizeSelector", () => {
       />,
     );
     const buttons = screen.getAllByRole("button");
-    expect(buttons).toHaveLength(9);
+    expect(buttons).toHaveLength(4);
   });
 
   it("each button shows preset label and card count", () => {
@@ -55,8 +55,8 @@ describe("GridSizeSelector", () => {
       />,
     );
     const buttons = screen.getAllByRole("button");
-    await user.click(buttons[4]);
-    expect(onChange).toHaveBeenCalledWith(4);
+    await user.click(buttons[3]);
+    expect(onChange).toHaveBeenCalledWith(3);
   });
 
   it("clicking the already-selected button does not call onChange", async () => {

@@ -22,7 +22,7 @@ describe("useGameState", () => {
     expect(result.current.state.cards).toHaveLength(16);
   });
 
-  it("startGame builds a board where each card carries a swatch", () => {
+  it("startGame builds a board where each card carries a color", () => {
     const { result } = renderHook(() => useGameState());
     act(() => {
       result.current.startGame({ rows: 2, cols: 2 });
@@ -30,8 +30,7 @@ describe("useGameState", () => {
     expect(result.current.state.phase).toBe("playing");
     expect(result.current.state.cards).toHaveLength(4);
     for (const card of result.current.state.cards) {
-      expect(card.colorKey).toBeTruthy();
-      expect(card.colors.length).toBeGreaterThanOrEqual(1);
+      expect(card.color).toBeTruthy();
     }
   });
 });

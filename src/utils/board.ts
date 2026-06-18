@@ -1,16 +1,16 @@
 import type { BoardConfig, Card } from "../types/game";
-import { generateSwatches } from "./colors";
+import { generateColors } from "./colors";
 
 export function generateBoard(config: BoardConfig): readonly Card[] {
   const total = config.rows * config.cols;
   const pairCount = total / 2;
 
-  // One distinct swatch per pair, each placed on two cards.
-  const swatches = generateSwatches(pairCount);
-  const cards: Array<{ colorKey: string; colors: readonly string[]; colorName: string }> = [];
-  for (const swatch of swatches) {
-    cards.push({ colorKey: swatch.key, colors: swatch.colors, colorName: swatch.name });
-    cards.push({ colorKey: swatch.key, colors: swatch.colors, colorName: swatch.name });
+  // One distinct color per pair, each placed on two cards.
+  const colors = generateColors(pairCount);
+  const cards: Array<{ color: string; colorName: string }> = [];
+  for (const color of colors) {
+    cards.push({ color: color.value, colorName: color.name });
+    cards.push({ color: color.value, colorName: color.name });
   }
 
   // Fisher-Yates shuffle
@@ -21,8 +21,7 @@ export function generateBoard(config: BoardConfig): readonly Card[] {
 
   return cards.map((card, index) => ({
     id: index,
-    colorKey: card.colorKey,
-    colors: card.colors,
+    color: card.color,
     colorName: card.colorName,
     state: "faceDown" as const,
   }));

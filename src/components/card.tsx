@@ -2,23 +2,13 @@ import type { CardState } from "../types/game";
 
 interface CardComponentProps {
   id: number;
-  colors: readonly string[];
+  color: string;
   colorName: string;
   state: CardState;
   onSelect: (id: number) => void;
 }
 
-// Solid fill for a single color; a hard diagonal split for two colors.
-function fillStyle(colors: readonly string[]): React.CSSProperties {
-  if (colors.length >= 2) {
-    return {
-      background: `linear-gradient(135deg, ${colors[0]} 0 50%, ${colors[1]} 50% 100%)`,
-    };
-  }
-  return { backgroundColor: colors[0] };
-}
-
-export function CardComponent({ id, colors, colorName, state, onSelect }: CardComponentProps) {
+export function CardComponent({ id, color, colorName, state, onSelect }: CardComponentProps) {
   const isRevealed = state === "faceUp" || state === "matched";
   const isClickable = state === "faceDown";
   const isMatched = state === "matched";
@@ -66,7 +56,7 @@ export function CardComponent({ id, colors, colorName, state, onSelect }: CardCo
         {/* Card Front (face-up / matched) — solid color fill */}
         <div
           data-testid={`face-${id}`}
-          style={fillStyle(colors)}
+          style={{ backgroundColor: color }}
           className={`
             backface-hidden rotate-y-180 absolute inset-0 rounded-card overflow-hidden
             ${isMatched

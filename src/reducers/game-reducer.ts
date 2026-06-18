@@ -55,7 +55,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "CHECK_MATCH": {
       if (state.phase !== "checking") return state;
       const [i, j] = state.selectedIndices;
-      const isMatch = state.cards[i].colorKey === state.cards[j].colorKey;
+      const isMatch = state.cards[i].color === state.cards[j].color;
       const newMoveCount = state.moveCount + 1;
 
       if (isMatch) {

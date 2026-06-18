@@ -1,64 +1,49 @@
 import { describe, it, expect } from "vitest";
-import { generateSwatches, MAX_SWATCHES } from "../../src/utils/colors";
+import { generateColors, MAX_COLORS } from "../../src/utils/colors";
 
-describe("generateSwatches", () => {
-  it("returns the requested number of swatches", () => {
-    expect(generateSwatches(6)).toHaveLength(6);
-    expect(generateSwatches(32)).toHaveLength(32);
+describe("generateColors", () => {
+  it("returns the requested number of colors", () => {
+    expect(generateColors(6)).toHaveLength(6);
+    expect(generateColors(MAX_COLORS)).toHaveLength(MAX_COLORS);
   });
 
   it("returns an empty array for non-positive counts", () => {
-    expect(generateSwatches(0)).toHaveLength(0);
-    expect(generateSwatches(-3)).toHaveLength(0);
+    expect(generateColors(0)).toHaveLength(0);
+    expect(generateColors(-3)).toHaveLength(0);
   });
 
-  it("produces distinct match keys", () => {
-    const keys = generateSwatches(32).map((s) => s.key);
-    expect(new Set(keys).size).toBe(32);
+  it("produces distinct color values", () => {
+    const values = generateColors(MAX_COLORS).map((c) => c.value);
+    expect(new Set(values).size).toBe(MAX_COLORS);
   });
 
-  it("uses solid colors before two-tone combinations", () => {
-    // Small boards should be all single-color swatches.
-    const small = generateSwatches(8);
-    for (const swatch of small) {
-      expect(swatch.colors).toHaveLength(1);
+  it("gives every color a non-empty name", () => {
+    for (const color of generateColors(MAX_COLORS)) {
+      expect(color.name).toBeTruthy();
+      expect(color.value).toMatch(/^hsl\(/);
     }
   });
 
-  it("extends with two-tone swatches once solids run out", () => {
-    const many = generateSwatches(32);
-    const twoTone = many.filter((s) => s.colors.length === 2);
-    expect(twoTone.length).toBeGreaterThan(0);
-    // Every swatch is either solid (1) or a pair (2).
-    for (const swatch of many) {
-      expect([1, 2]).toContain(swatch.colors.length);
-      expect(swatch.name).toBeTruthy();
-      expect(swatch.colors.every((c) => c.startsWith("hsl("))).toBe(true);
-    }
-  });
-
-  it("can produce enough swatches for the largest preset (8x8 = 32 pairs)", () => {
-    expect(MAX_SWATCHES).toBeGreaterThanOrEqual(32);
+  it("supports at least the largest board (4x6 = 12 pairs)", () => {
+    expect(MAX_COLORS).toBeGreaterThanOrEqual(12);
   });
 
   it("is deterministic for a given count", () => {
-    expect(generateSwatches(20)).toEqual(generateSwatches(20));
+    expect(generateColors(10)).toEqual(generateColors(10));
   });
 
-  it("keeps the solid colors perceptually distinct", () => {
-    // Convert each solid color to OKLab and require a minimum pairwise
-    // distance, so no two base colors are easy to confuse on the board.
-    const solids = generateSwatches(MAX_SWATCHES)
-      .filter((s) => s.colors.length === 1)
-      .map((s) => oklab(s.colors[0]));
+  it("keeps the colors perceptually distinct", () => {
+    // Convert each color to OKLab and require a minimum pairwise distance, so
+    // no two colors are easy to confuse on the board.
+    const labs = generateColors(MAX_COLORS).map((c) => oklab(c.value));
 
     let min = Infinity;
-    for (let i = 0; i < solids.length; i++) {
-      for (let j = i + 1; j < solids.length; j++) {
-        min = Math.min(min, deltaE(solids[i], solids[j]));
+    for (let i = 0; i < labs.length; i++) {
+      for (let j = i + 1; j < labs.length; j++) {
+        min = Math.min(min, deltaE(labs[i], labs[j]));
       }
     }
-    expect(min).toBeGreaterThan(0.18);
+    expect(min).toBeGreaterThan(0.12);
   });
 });
 

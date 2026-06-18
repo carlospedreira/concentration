@@ -22,16 +22,16 @@ describe("SetupScreen", () => {
     expect(screen.queryByRole("spinbutton")).toBeNull();
   });
 
-  it("renders 9 grid size option buttons", () => {
+  it("renders 4 grid size option buttons", () => {
     renderSetup();
     expect(screen.getByText("3x4")).toBeInTheDocument();
     expect(screen.getByText("4x4")).toBeInTheDocument();
-    expect(screen.getByText("8x8")).toBeInTheDocument();
+    expect(screen.getByText("4x6")).toBeInTheDocument();
     const presetButtons = screen
       .getAllByRole("button", { pressed: true })
       .concat(screen.getAllByRole("button", { pressed: false }))
       .filter((btn) => btn.hasAttribute("aria-pressed"));
-    expect(presetButtons).toHaveLength(9);
+    expect(presetButtons).toHaveLength(4);
   });
 
   it("calls onStart with correct config from selected preset", async () => {
@@ -39,11 +39,11 @@ describe("SetupScreen", () => {
     const user = userEvent.setup();
     renderSetup({ onStart });
 
-    // Select 5x6 (index 4, 30 cards)
-    await user.click(screen.getByText("5x6"));
+    // Select 4x6 (index 3, 24 cards)
+    await user.click(screen.getByText("4x6"));
     await user.click(screen.getByRole("button", { name: /start/i }));
 
-    expect(onStart).toHaveBeenCalledWith({ rows: 5, cols: 6 });
+    expect(onStart).toHaveBeenCalledWith({ rows: 4, cols: 6 });
   });
 
   it("calls onStart with default 4x4 when no preset is changed", async () => {
@@ -82,10 +82,10 @@ describe("SetupScreen", () => {
 
   describe("grid size persistence", () => {
     it("initializes with stored preset from localStorage", () => {
-      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: 4 }));
+      localStorage.setItem(GRID_STORAGE_KEY, JSON.stringify({ presetIndex: 3 }));
       renderSetup();
-      const button5x6 = screen.getByText("5x6").closest("button");
-      expect(button5x6).toHaveAttribute("aria-pressed", "true");
+      const button4x6 = screen.getByText("4x6").closest("button");
+      expect(button4x6).toHaveAttribute("aria-pressed", "true");
     });
 
     it("initializes with default 4x4 when localStorage is empty", () => {
@@ -98,12 +98,12 @@ describe("SetupScreen", () => {
       const user = userEvent.setup();
       renderSetup();
 
-      await user.click(screen.getByText("6x6"));
+      await user.click(screen.getByText("4x5"));
       await user.click(screen.getByRole("button", { name: /start/i }));
 
       const stored = localStorage.getItem(GRID_STORAGE_KEY);
       expect(stored).not.toBeNull();
-      expect(JSON.parse(stored!)).toEqual({ presetIndex: 5 });
+      expect(JSON.parse(stored!)).toEqual({ presetIndex: 2 });
     });
   });
 });
