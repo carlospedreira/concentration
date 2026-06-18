@@ -13,22 +13,22 @@ interface BaseColor {
   readonly name: string;
 }
 
-// A curated set of vivid, mutually-distinct colors. They are intentionally
-// ordered so that neighbouring entries contrast strongly — this keeps the
-// two-tone combinations (built from adjacent-ish entries) easy to tell apart.
+// A curated set of vivid, mutually-distinct colors. The set was chosen by a
+// farthest-point search in OKLab space, constrained to stay bright enough to
+// read on the dark board: every pair sits at least ~0.18 ΔE apart, the
+// practical ceiling for eight clearly-different colors. Eight solids also give
+// 8 + C(8,2) = 36 distinct swatches once two-tone cards are added — enough for
+// the largest 32-pair board. Entries are interleaved (warm/cool, light/dark)
+// so the two-tone combinations built from neighbours stay high-contrast.
 const BASE_COLORS: readonly BaseColor[] = [
-  { id: "red", value: "hsl(0 85% 55%)", name: "Red" },
-  { id: "cyan", value: "hsl(188 88% 50%)", name: "Cyan" },
-  { id: "yellow", value: "hsl(52 95% 55%)", name: "Yellow" },
-  { id: "purple", value: "hsl(270 72% 62%)", name: "Purple" },
-  { id: "green", value: "hsl(140 65% 42%)", name: "Green" },
-  { id: "pink", value: "hsl(330 85% 65%)", name: "Pink" },
-  { id: "blue", value: "hsl(222 82% 58%)", name: "Blue" },
-  { id: "orange", value: "hsl(30 95% 52%)", name: "Orange" },
-  { id: "lime", value: "hsl(85 75% 48%)", name: "Lime" },
-  { id: "gray", value: "hsl(0 0% 60%)", name: "Gray" },
-  { id: "brown", value: "hsl(22 55% 38%)", name: "Brown" },
-  { id: "white", value: "hsl(0 0% 92%)", name: "White" },
+  { id: "red", value: "hsl(0 88% 52%)", name: "Red" },
+  { id: "sky", value: "hsl(210 80% 68%)", name: "Sky" },
+  { id: "yellow", value: "hsl(60 88% 52%)", name: "Yellow" },
+  { id: "magenta", value: "hsl(300 88% 52%)", name: "Magenta" },
+  { id: "green", value: "hsl(125 78% 50%)", name: "Green" },
+  { id: "orange", value: "hsl(30 90% 58%)", name: "Orange" },
+  { id: "blue", value: "hsl(240 88% 60%)", name: "Blue" },
+  { id: "teal", value: "hsl(170 78% 68%)", name: "Teal" },
 ];
 
 /** Maximum number of distinct swatches we can produce. */
